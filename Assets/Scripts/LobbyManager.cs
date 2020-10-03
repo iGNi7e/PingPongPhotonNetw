@@ -14,10 +14,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 		Log("Player's name is " + PhotonNetwork.NickName );
 		PhotonNetwork.AutomaticallySyncScene = true;
 		PhotonNetwork.GameVersion = "1.0.0";
+		PhotonNetwork.SendRate = 10;
+		PhotonNetwork.SerializationRate = 10;
 		PhotonNetwork.ConnectUsingSettings();
-		PhotonNetwork.SendRate = 20;
-		PhotonNetwork.SerializationRate = 20;
-
 	}
 
 	public override void OnConnectedToMaster()

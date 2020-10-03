@@ -12,14 +12,25 @@ public class NetworkGameManager : MonoBehaviourPunCallbacks
 	private Object[] Sprites;
 	private static Vector2 aspectRatio;
 
+	public GameObject Camera1;
+	public GameObject Camera2;
+
 	public static float GetScreenToWorldHeight
 	{
 		get
 		{
-			Vector2 topRightCorner = new Vector2( 1, 1 );
-			Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
-			var height = edgeVector.y * 2;
-			return height;
+			if (Camera.main.transform.rotation == Quaternion.identity) {
+				Vector2 topRightCorner = new Vector2( 1, 1 );
+				Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
+				var height = edgeVector.y * 2;
+				return height;
+			}
+			else {
+				Vector2 topRightCorner = new Vector2( 0, 0 );
+				Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
+				var height = edgeVector.y * 2;
+				return height;
+			}
 		}
 	}
 
@@ -27,16 +38,35 @@ public class NetworkGameManager : MonoBehaviourPunCallbacks
 	{
 		get
 		{
-			Vector2 topRightCorner = new Vector2( 1, 1 );
-			Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
-			var width = edgeVector.x * 2;
-			return width;
+			if (Camera.main.transform.rotation == Quaternion.identity)
+			{
+				Vector2 topRightCorner = new Vector2( 1, 1 );
+				Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
+				var width = edgeVector.x * 2;
+				return width;
+			}
+			else
+			{
+				Vector2 topRightCorner = new Vector2( 0, 0 );
+				Vector2 edgeVector = Camera.main.ViewportToWorldPoint( topRightCorner );
+				var width = edgeVector.x * 2;
+				return width;
+			}
 		}
 	}
 
 	void Start()
     {
-        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+
+		if ( PhotonNetwork.IsMasterClient ) {
+			PhotonNetwork.Instantiate( "Player", Vector3.zero, Quaternion.identity );
+		}
+		else {
+			PhotonNetwork.Instantiate( "Player", Vector3.zero, Quaternion.Euler(new Vector3(0,0,180)) );
+		}
+		if (!PhotonNetwork.IsMasterClient)
+			return;
+		PhotonNetwork.Instantiate("Ball", Vector3.zero, Quaternion.identity);
     }
 
     void Update()
